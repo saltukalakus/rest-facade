@@ -3,11 +3,14 @@ var url = require('url');
 var changeCase = require('change-case');
 
 var request = require('superagent');
+require('superagent-proxy')(request);
 var Promise = require('bluebird');
 var ArgumentError = require('./exceptions').ArgumentError;
 var APIError = require('./exceptions').APIError;
 var defaultOptions = require('./defaultOptions');
 var goToPath = require('./utils');
+
+var PROXY_PATH = 'http://localhost:8080';
 
 /**
  * @class
@@ -279,6 +282,7 @@ Client.prototype.request = function (options, params, callback) {
     // Send the request.
     req
       .set('Accept', 'application/json')
+      .proxy(PROXY_PATH)
       .end(function (err, res) {
         if (err) {
           var response = err.response || {};
